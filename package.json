@@ -12,7 +12,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "axios": "^1.10.0",
     "express": "^5.1.0",
@@ -23,5 +22,14 @@
   "devDependencies": {
     "concurrently": "^9.2.0",
     "nodemon": "^3.1.10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chimex53/task-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chimex53/task-manager/issues"
+  },
+  "homepage": "https://github.com/chimex53/task-manager#readme",
+  "description": ""
 }
