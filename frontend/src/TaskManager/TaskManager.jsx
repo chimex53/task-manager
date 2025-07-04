@@ -13,7 +13,7 @@ const TaskManager = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // --- Fetch Tasks on Component Mount ---
+  // Fetch tasks on mount
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -32,7 +32,6 @@ const TaskManager = () => {
     }
   };
 
-  // --- Handle Add Task ---
   const handleAdd = async (e) => {
     e.preventDefault();
     if (!taskName.trim()) {
@@ -61,7 +60,6 @@ const TaskManager = () => {
     }
   };
 
-  // --- Handle Delete Task ---
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this task?")) {
       return;
@@ -83,7 +81,6 @@ const TaskManager = () => {
     }
   };
 
-  // --- Handle Toggle Complete ---
   const handleToggleComplete = async (id, currentCompletedStatus) => {
     setLoading(true);
     setError(null);
@@ -106,9 +103,37 @@ const TaskManager = () => {
     }
   };
 
+// Function to handle task updates
+  const handleUpdate = async (id, updatedFields) => {
+  setLoading(true);
+  setError(null);
+  try {
+    const response = await axios.put(`${API_BASE_URL}/${id}`, updatedFields);
+    setTasks(tasks.map(task => (task._id === id ? response.data : task)));
+  } catch (err) {
+    console.error("Error updating task:", err);
+    setError(
+      err.response?.data?.message
+        ? `Failed to update task: ${err.response.data.message}`
+        : "Failed to update task."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
+  // Calculate totals
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter(task => task.completed).length;
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Task Manager</h2>
+
+      {/* Display total and completed counts */}
+      <p style={{ textAlign: 'center', marginBottom: '20px', fontWeight: '600' }}>
+        Total Tasks: {totalTasks} | Completed: {completedTasks}
+      </p>
 
       <TaskForm task={taskName} setTask={setTaskName} handleAdd={handleAdd} />
 
@@ -121,6 +146,7 @@ const TaskManager = () => {
           tasks={tasks}
           onDelete={handleDelete}
           onToggleComplete={handleToggleComplete}
+            onUpdate={handleUpdate} 
         />
       )}
     </div>
