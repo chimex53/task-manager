@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';  // Added useEffect
 import axios from 'axios';
 import styles from './TaskManager.module.css';
 import Spinner from './Spinner';
@@ -13,7 +13,7 @@ const TaskManager = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch tasks on mount
+  // Fetch tasks automatically on component mount
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -103,26 +103,24 @@ const TaskManager = () => {
     }
   };
 
-// Function to handle task updates
   const handleUpdate = async (id, updatedFields) => {
-  setLoading(true);
-  setError(null);
-  try {
-    const response = await axios.put(`${API_BASE_URL}/${id}`, updatedFields);
-    setTasks(tasks.map(task => (task._id === id ? response.data : task)));
-  } catch (err) {
-    console.error("Error updating task:", err);
-    setError(
-      err.response?.data?.message
-        ? `Failed to update task: ${err.response.data.message}`
-        : "Failed to update task."
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.put(`${API_BASE_URL}/${id}`, updatedFields);
+      setTasks(tasks.map(task => (task._id === id ? response.data : task)));
+    } catch (err) {
+      console.error("Error updating task:", err);
+      setError(
+        err.response?.data?.message
+          ? `Failed to update task: ${err.response.data.message}`
+          : "Failed to update task."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Calculate totals
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(task => task.completed).length;
 
@@ -130,7 +128,6 @@ const TaskManager = () => {
     <div className={styles.container}>
       <h2 className={styles.title}>Task Manager</h2>
 
-      {/* Display total and completed counts */}
       <p style={{ textAlign: 'center', marginBottom: '20px', fontWeight: '600' }}>
         Total Tasks: {totalTasks} | Completed: {completedTasks}
       </p>
@@ -139,14 +136,14 @@ const TaskManager = () => {
 
       {error && <p className={styles.errorMessage}>{error}</p>}
 
-      {loading ? (
-        <Spinner />
-      ) : (
+      {loading && <Spinner />}
+
+      {!loading && (
         <TaskList
           tasks={tasks}
           onDelete={handleDelete}
           onToggleComplete={handleToggleComplete}
-            onUpdate={handleUpdate} 
+          onUpdate={handleUpdate}
         />
       )}
     </div>
